@@ -41,8 +41,9 @@ session_start();
 
     <!-- Hero Section -->
     <div class="hero">
-        <h1>Welcome to Poliklinik Management System</h1>
-        <p>Efficiently manage doctors, patients, polyclinics, and medicines in one place.</p>
+        <h1>Sistem Temu Janji</h1>
+       <h1> Pasien - Dokter</h1> 
+        <p>Bimbingan Karir 2024</p>
     </div>
 
     <!-- Main Content -->
@@ -52,9 +53,9 @@ session_start();
                 <div class="card">
                     <div class="card-body">
                         <i class="fas fa-user-md fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">Doctor Login</h5>
-                        <p class="card-text">Access your schedule and manage patient records.</p>
-                        <a href="login.php" class="btn btn-success">Login as Doctor</a>
+                        <h5 class="card-title">Login Dokter</h5>
+                        <p class="card-text">Apabila Anda adalah seorang Dokter, silahkan Login terlebih dahulu untuk memulai melayani Pasien!</p>
+                        <a href="login.php" class="btn btn-success">Login Dokter</a>
                     </div>
                 </div>
             </div>
@@ -62,9 +63,9 @@ session_start();
                 <div class="card">
                     <div class="card-body">
                         <i class="fas fa-user fa-3x text-info mb-3"></i>
-                        <h5 class="card-title">Patient Login</h5>
-                        <p class="card-text">Book appointments and view medical records.</p>
-                        <a href="register.php" class="btn btn-info">Login as Patient</a>
+                        <h5 class="card-title">Regristrasi Pasien</h5>
+                        <p class="card-text">Apabila Anda adalah seorang Pasien, silahkan Registrasi terlebih dahulu untuk melakukan pendaftaran sebagai Pasien!</p>
+                        <a href="register.php" class="btn btn-info">Daftar Pasien</a>
                     </div>
                 </div>
             </div>

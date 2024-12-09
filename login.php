@@ -43,13 +43,13 @@ if (mysqli_num_rows($result_pasien) > 0) {
     // Menyimpan data ke session
     $_SESSION['role'] = 'pasien';
     $_SESSION['username'] = $nama;
-    $_SESSION['no_rm'] = $row_pasien['no_rm']; // Akses no_rm dengan benar
+    $_SESSION['no_rm'] = $row_pasien['no_rm']; 
 
-    // Redirect ke halaman admin pasien
+
     header('Location: ./admin/pasiendas.php');
     exit();
 } else {
-    // Jika data tidak ditemukan
+    
     $error = "Nama atau alamat tidak cocok!";
 }
 }
