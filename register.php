@@ -10,11 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $no_hp = mysqli_real_escape_string($conn, $_POST['no_hp']);
 
     // Buat nomor rekam medis
-    $current_month = date('Ym'); // Format YYYYMM
+    $current_month = date('Ym'); 
     $query = "SELECT COUNT(*) + 1 AS next_number FROM Pasien WHERE no_rm LIKE '$current_month%'";
     $result = mysqli_query($conn, $query);
     $row = mysqli_fetch_assoc($result);
-    $next_number = str_pad($row['next_number'], 4, '0', STR_PAD_LEFT); // Tambahkan padding 0
+    $next_number = str_pad($row['next_number'], 4, '0', STR_PAD_LEFT); 
     $no_rm = "$current_month-$next_number";
 
     // Simpan data pasien ke database
@@ -36,30 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pendaftaran Pasien Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .register-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .register-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .already-registered {
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
+    <link href="assets/register.css" rel="stylesheet">
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">Poliklinik System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Form Pendaftaran -->
     <div class="register-container">
         <h2>Pendaftaran Pasien Baru</h2>
 
@@ -71,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="alert alert-danger"><?= $error_message ?></div>
         <?php } ?>
 
-        <!-- Form Pendaftaran Pasien -->
         <form method="POST">
             <div class="mb-3">
                 <label for="nama_pasien" class="form-label">Nama Pasien</label>
@@ -92,11 +82,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" class="btn btn-primary w-100">Daftar</button>
         </form>
 
-        <!-- Link untuk pengguna yang sudah memiliki akun -->
         <div class="already-registered">
             <p>Sudah memiliki akun? <a href="login.php">Masuk di sini</a></p>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; <?php echo date('Y'); ?> Poliklinik Management System. All rights reserved.</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

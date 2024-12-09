@@ -1,0 +1,123 @@
+/* Global Styles */
+body {
+  background-color: #f8f9fa;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Form Styling */
+.register-container {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #ffffff; /* Warna background putih */
+  padding: 30px;
+  border-radius: 12px; /* Sudut melengkung */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Efek bayangan */
+  transition: all 0.3s ease-in-out;
+}
+
+.register-container:hover {
+  transform: translateY(-5px); /* Animasi saat hover */
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3); /* Bayangan lebih tajam saat hover */
+}
+
+.register-container h2 {
+  text-align: center;
+  color: #007bff; /* Warna teks biru */
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.register-container .form-label {
+  font-weight: 500; /* Sedikit lebih tebal untuk label */
+  color: #343a40; /* Warna teks label */
+}
+
+.register-container .form-control {
+  border: 2px solid #ced4da; /* Border abu-abu */
+  border-radius: 8px; /* Sudut melengkung */
+  padding: 10px 15px;
+  font-size: 16px;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.register-container .form-control:focus {
+  border-color: #007bff; /* Warna border biru saat fokus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Efek cahaya saat fokus */
+}
+
+.register-container button {
+  background-color: #007bff; /* Warna tombol biru */
+  color: #ffffff; /* Warna teks putih */
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px; /* Sudut melengkung */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+}
+
+.register-container button:hover {
+  background-color: #0056b3; /* Warna biru lebih gelap saat hover */
+  transform: translateY(-2px); /* Efek gerakan saat hover */
+}
+
+.register-container button:active {
+  transform: translateY(0); /* Efek klik */
+}
+
+.register-container .already-registered {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.register-container .already-registered a {
+  color: #007bff;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.register-container .already-registered a:hover {
+  color: #0056b3; /* Warna lebih gelap saat hover */
+  text-decoration: underline;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #007bff;
+}
+
+.navbar .navbar-brand {
+  color: white;
+  font-weight: bold;
+}
+
+.navbar .navbar-brand:hover,
+.navbar .nav-link:hover {
+  color: #dfe6e9;
+}
+
+.navbar .nav-link {
+  color: white;
+  font-weight: 500;
+}
+
+.navbar .nav-link.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: auto;
+  font-size: 0.9rem;
+}

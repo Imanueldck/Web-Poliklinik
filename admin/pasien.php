@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_or_update_pasie
     } else {
         // Operasi Insert
         // Buat nomor rekam medis (no_rm)
-        $current_month = date('Ym'); // Format YYYYMM
+        $current_month = date('Ym'); 
         $result = mysqli_query($conn, "SELECT COUNT(*) + 1 AS next_number FROM Pasien WHERE no_rm LIKE '$current_month%'");
         $row = mysqli_fetch_assoc($result);
         $next_number = str_pad($row['next_number'], 4, '0', STR_PAD_LEFT);
