@@ -15,10 +15,6 @@ Persyaratan Sistem
 
 Berikut adalah tata cara instalasi dan konfigurasi proyek Poliklinik Management System yang dapat Anda gunakan sebagai panduan untuk README proyek:
 
-Poliklinik Management System
-Deskripsi
-Poliklinik Management System adalah aplikasi berbasis web untuk mengelola data poliklinik, pasien, dokter, jadwal, dan obat. Aplikasi ini dirancang untuk memudahkan pendaftaran pasien, pengelolaan data oleh admin, serta pencatatan riwayat pemeriksaan.
-
 Tata Cara Instalasi
 
 1. Clone Repository
