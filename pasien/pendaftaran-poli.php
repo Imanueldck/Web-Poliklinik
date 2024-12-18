@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pasien') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'pasien' || !isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['daftar_poli'])) {
 $poli_result = mysqli_query($conn, "SELECT * FROM Poli");
 $jadwal_result = mysqli_query($conn, "SELECT * FROM Jadwal_Periksa WHERE aktif=1");
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +84,7 @@ $jadwal_result = mysqli_query($conn, "SELECT * FROM Jadwal_Periksa WHERE aktif=1
                             <!-- Pilih Poli dari database -->
                             <div class="mb-3">
                                 <label for="id_poli" class="form-label">Pilih Poli</label>
-                                <select name="id_poli" class="form-control" required>
+                                <select name="id_poli" id="id_poli" class="form-control" required onchange="loadJadwal(this.value)">
                                     <option value="" disabled selected>Pilih Poli</option>
                                     <?php while ($poli = mysqli_fetch_assoc($poli_result)) { ?>
                                         <option value="<?= $poli['id_poli'] ?>"><?= $poli['nama_poli'] ?></option>
@@ -94,11 +95,8 @@ $jadwal_result = mysqli_query($conn, "SELECT * FROM Jadwal_Periksa WHERE aktif=1
                             <!-- Pilih Jadwal Periksa dari database -->
                             <div class="mb-3">
                                 <label for="id_jadwal" class="form-label">Pilih Jadwal</label>
-                                <select name="id_jadwal" class="form-control" required>
+                                <select name="id_jadwal" id="id_jadwal" class="form-control" required>
                                     <option value="" disabled selected>Pilih Jadwal</option>
-                                    <?php while ($jadwal = mysqli_fetch_assoc($jadwal_result)) { ?>
-                                        <option value="<?= $jadwal['id_jadwal'] ?>"><?= $jadwal['hari'] ?> | <?= $jadwal['jam_mulai'] ?> - <?= $jadwal['jam_selesai'] ?></option>
-                                    <?php } ?>
                                 </select>
                             </div>
 
@@ -115,15 +113,28 @@ $jadwal_result = mysqli_query($conn, "SELECT * FROM Jadwal_Periksa WHERE aktif=1
             </div>
         </div>
     </div>
+
     <!-- Script -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            sidebar.classList.toggle('show');
-            content.classList.toggle('toggled');
+            sidebar.classList.toggle('d-none');
+        }
+
+        function loadJadwal(id_poli) {
+            fetch(`get_jadwal.php?id_poli=${id_poli}`)
+                .then(response => response.json())
+                .then(data => {
+                    const jadwalSelect = document.getElementById('id_jadwal');
+                    jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
+                    data.forEach(jadwal => {
+                        jadwalSelect.innerHTML += `<option value="${jadwal.id_jadwal}">${jadwal.hari} | ${jadwal.jam_mulai} - ${jadwal.jam_selesai} (Dokter: ${jadwal.nama_dokter})</option>`;
+                    });
+                })
+                .catch(error => console.error('Error:', error));
         }
     </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

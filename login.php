@@ -25,34 +25,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result_dokter = mysqli_query($conn, $query_dokter);
 
     if (mysqli_num_rows($result_dokter) > 0) {
+        $dokter_data = mysqli_fetch_assoc($result_dokter); // Ambil hasil query sebagai array
         $_SESSION['role'] = 'dokter';
-        $_SESSION['username'] = $nama;
-        header('Location: ./admin/dokterdas.php');
+        $_SESSION['username'] = $dokter_data['nama_dokter']; // Gunakan nama dokter dari database
+        $_SESSION['user_id'] = $dokter_data['id_dokter']; // Set ID dokter ke sesi
+        header('Location: ./dokter/dokterdas.php');
         exit();
     }
-
-// Validasi Pasien
-$query_pasien = "SELECT * FROM Pasien WHERE nama_pasien = '$nama' AND alamat = '$alamat'";
-$result_pasien = mysqli_query($conn, $query_pasien);
-
-// Memeriksa apakah ada data yang ditemukan
-if (mysqli_num_rows($result_pasien) > 0) {
-    // Mengambil hasil query sebagai array atau objek
-    $row_pasien = mysqli_fetch_assoc($result_pasien);
-
-    // Menyimpan data ke session
-    $_SESSION['role'] = 'pasien';
-    $_SESSION['username'] = $nama;
-    $_SESSION['no_rm'] = $row_pasien['no_rm']; 
-
-
-    header('Location: ./admin/pasiendas.php');
-    exit();
-} else {
     
-    $error = "Nama atau alamat tidak cocok!";
+
+
+    // Validasi Pasien
+    $query_pasien = "SELECT * FROM Pasien WHERE nama_pasien = '$nama' AND alamat = '$alamat'";
+    $result_pasien = mysqli_query($conn, $query_pasien);
+
+    if (mysqli_num_rows($result_pasien) > 0) {
+        $row_pasien = mysqli_fetch_assoc($result_pasien);
+        $_SESSION['role'] = 'pasien';
+        $_SESSION['username'] = $row_pasien['nama_pasien'];
+        $_SESSION['user_id'] = $row_pasien['id_pasien'];
+        $_SESSION['no_rm'] = $row_pasien['no_rm'];
+        header('Location: ./pasien/pasiendas.php');
+        exit();
+    } else {
+        $error = "Nama atau alamat tidak cocok!";
+    }
 }
-}
+
 ?>
 
 <!DOCTYPE html>
