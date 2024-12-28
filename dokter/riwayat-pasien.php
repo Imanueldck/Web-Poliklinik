@@ -15,10 +15,9 @@ $query = "
     SELECT p.id_pasien, p.nama_pasien, p.alamat, p.no_ktp, p.no_hp, p.no_rm, dp.id_daftar
     FROM Daftar_Poli dp
     JOIN Pasien p ON dp.id_pasien = p.id_pasien
-    JOIN Jadwal_Periksa jp ON dp.id_jadwal = jp.id_jadwal
-    WHERE jp.id_dokter = $id_dokter
     ORDER BY dp.id_daftar DESC
 ";
+
 $result = mysqli_query($conn, $query);
 ?>
 
