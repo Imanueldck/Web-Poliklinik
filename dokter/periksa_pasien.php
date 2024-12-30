@@ -59,6 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_insert->bind_param('issi', $id_daftar, $tgl_periksa, $catatan, $biaya_periksa);
         $stmt_insert->execute();
 
+        // Ambil id_periksa yang baru disimpan
+        $id_periksa = $stmt_insert->insert_id;
+
+        // Simpan ke tabel Detail_Periksa untuk obat yang dipilih
+        foreach ($obat_id as $id_obat) {
+            $query_detail = "INSERT INTO Detail_Periksa (id_periksa, id_obat) VALUES (?, ?)";
+            $stmt_detail = $conn->prepare($query_detail);
+            $stmt_detail->bind_param('ii', $id_periksa, $id_obat);
+            $stmt_detail->execute();
+        }
+
         // Tandai pasien sebagai selesai
         $query_update = "UPDATE Daftar_Poli SET status = 'selesai' WHERE id_daftar = ?";
         $stmt_update = $conn->prepare($query_update);
