@@ -86,45 +86,86 @@ $result = mysqli_query($conn, $query);
                                     </td>
                                 </tr>
 
-                                <!-- Modal Detail Riwayat -->
-                                <div class="modal fade" id="detailModal<?= $row['id_daftar'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $row['id_daftar'] ?>" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
+                <!-- Modal Detail Riwayat -->
+                                    <div class="modal fade" id="detailModal<?= $row['id_daftar'] ?>" tabindex="-1" aria-labelledby="modalLabel<?= $row['id_daftar'] ?>" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                                  <div class="modal-content">
+                                                           <div class="modal-header">
                                                 <h5 class="modal-title" id="modalLabel<?= $row['id_daftar'] ?>">Detail Riwayat Periksa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <?php
-                                                // Query untuk detail riwayat
-                                                $detail_query = "
-                                                    SELECT p.nama_pasien, d.nama_dokter, dp.keluhan, jp.hari, jp.jam_mulai, jp.jam_selesai, per.tgl_periksa, per.catatan, per.biaya_periksa
-                                                    FROM Daftar_Poli dp
-                                                    JOIN Pasien p ON dp.id_pasien = p.id_pasien
-                                                    JOIN Jadwal_Periksa jp ON dp.id_jadwal = jp.id_jadwal
-                                                    JOIN Dokter d ON jp.id_dokter = d.id_dokter
-                                                    LEFT JOIN Periksa per ON dp.id_daftar = per.id_daftar
-                                                    WHERE dp.id_daftar = {$row['id_daftar']}
-                                                ";
-                                                $detail_result = mysqli_query($conn, $detail_query);
-                                                $detail = mysqli_fetch_assoc($detail_result);
-                                                ?>
-                                                <p><strong>Nama Pasien:</strong> <?= $detail['nama_pasien'] ?></p>
-                                                <p><strong>Dokter:</strong> <?= $detail['nama_dokter'] ?></p>
-                                                <p><strong>Keluhan:</strong> <?= $detail['keluhan'] ?></p>
-                                                <p><strong>Hari:</strong> <?= $detail['hari'] ?></p>
-                                                <p><strong>Jam:</strong> <?= $detail['jam_mulai'] ?> - <?= $detail['jam_selesai'] ?></p>
-                                                <p><strong>Tanggal Periksa:</strong> <?= $detail['tgl_periksa'] ?: '-' ?></p>
-                                                <p><strong>Catatan:</strong> <?= $detail['catatan'] ?: '-' ?></p>
-                                                <p><strong>Biaya Periksa:</strong> <?= $detail['biaya_periksa'] ? 'Rp ' . number_format($detail['biaya_periksa'], 0, ',', '.') : '-' ?></p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Modal -->
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php
+                // Query untuk detail riwayat
+                $detail_query = "
+                    SELECT 
+                        p.nama_pasien, 
+                        d.nama_dokter, 
+                        dp.keluhan, 
+                        jp.hari, 
+                        jp.jam_mulai, 
+                        jp.jam_selesai, 
+                        per.tgl_periksa, 
+                        per.catatan, 
+                        per.biaya_periksa, 
+                        o.nama_obat, 
+                        o.kemasan, 
+                        o.harga
+                    FROM 
+                        Daftar_Poli dp
+                    JOIN 
+                        Pasien p ON dp.id_pasien = p.id_pasien
+                    JOIN 
+                        Jadwal_Periksa jp ON dp.id_jadwal = jp.id_jadwal
+                    JOIN 
+                        Dokter d ON jp.id_dokter = d.id_dokter
+                    LEFT JOIN 
+                        Periksa per ON dp.id_daftar = per.id_daftar
+                    LEFT JOIN 
+                        Detail_Periksa det ON per.id_periksa = det.id_periksa
+                    LEFT JOIN 
+                        Obat o ON det.id_obat = o.id_obat
+                    WHERE 
+                        dp.id_daftar = {$row['id_daftar']}
+                ";
+
+                $detail_result = mysqli_query($conn, $detail_query);
+                $detail = mysqli_fetch_assoc($detail_result);
+                ?>
+                <p><strong>Nama Pasien:</strong> <?= $detail['nama_pasien'] ?></p>
+                <p><strong>Dokter:</strong> <?= $detail['nama_dokter'] ?></p>
+                <p><strong>Keluhan:</strong> <?= $detail['keluhan'] ?></p>
+                <p><strong>Hari:</strong> <?= $detail['hari'] ?></p>
+                <p><strong>Jam:</strong> <?= $detail['jam_mulai'] ?> - <?= $detail['jam_selesai'] ?></p>
+                <p><strong>Tanggal Periksa:</strong> <?= $detail['tgl_periksa'] ?: '-' ?></p>
+                <p><strong>Catatan:</strong> <?= $detail['catatan'] ?: '-' ?></p>
+                <p><strong>Biaya Periksa:</strong> <?= $detail['biaya_periksa'] ? 'Rp ' . number_format($detail['biaya_periksa'], 0, ',', '.') : '-' ?></p>
+                <p><strong>Obat:</strong></p>
+                <ul>
+                    <?php
+                    // Loop untuk menampilkan data obat
+                    mysqli_data_seek($detail_result, 0); // Reset pointer hasil query
+                    $found_obat = false;
+                    while ($obat = mysqli_fetch_assoc($detail_result)) {
+                        if (!empty($obat['nama_obat'])) {
+                            echo "<li>{$obat['nama_obat']} ({$obat['kemasan']}) - Rp " . number_format($obat['harga'], 0, ',', '.') . "</li>";
+                            $found_obat = true;
+                        }
+                    }
+                    if (!$found_obat) {
+                        echo "<li>Belum ada data obat.</li>";
+                    }
+                    ?>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal -->
+
                             <?php } ?>
                         </tbody>
                     </table>

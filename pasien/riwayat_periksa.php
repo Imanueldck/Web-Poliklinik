@@ -12,7 +12,7 @@ $id_pasien = $_SESSION['user_id'];
 
 // Ambil data riwayat pemeriksaan pasien dari database
 $query = "
-    SELECT dp.no_antrian, po.nama_poli, jp.hari, jp.jam_mulai, jp.jam_selesai, d.nama_dokter, 
+    SELECT dp.id_daftar, dp.no_antrian, po.nama_poli, jp.hari, jp.jam_mulai, jp.jam_selesai, d.nama_dokter, 
            dp.keluhan, p.tgl_periksa, p.catatan, p.biaya_periksa
     FROM Daftar_Poli dp
     JOIN Jadwal_Periksa jp ON dp.id_jadwal = jp.id_jadwal
@@ -77,6 +77,19 @@ $result = mysqli_query($conn, $query);
                             $no = 1;
                             while ($row = mysqli_fetch_assoc($result)) {
                                 $status = $row['tgl_periksa'] ? 'Selesai' : 'Belum Diperiksa';
+                                
+                                // Query untuk mengambil daftar obat
+                                $id_daftar = $row['id_daftar'];
+                                $query_obat = "
+                                    SELECT o.nama_obat 
+                                    FROM Detail_Periksa dp
+                                    JOIN Obat o ON dp.id_obat = o.id_obat
+                                    WHERE dp.id_periksa = (SELECT id_periksa FROM Periksa WHERE id_daftar = $id_daftar)";
+                                $result_obat = mysqli_query($conn, $query_obat);
+                                $obat_list = [];
+                                while ($obat = mysqli_fetch_assoc($result_obat)) {
+                                    $obat_list[] = $obat['nama_obat'];
+                                }
                             ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
@@ -106,6 +119,12 @@ $result = mysqli_query($conn, $query);
                                                             <p><strong>Tanggal Periksa:</strong> <?= $row['tgl_periksa'] ?></p>
                                                             <p><strong>Catatan:</strong> <?= $row['catatan'] ?></p>
                                                             <p><strong>Biaya:</strong> Rp <?= number_format($row['biaya_periksa'], 0, ',', '.') ?></p>
+                                                            <p><strong>Obat:</strong></p>
+                                                            <ul>
+                                                                <?php foreach ($obat_list as $obat) { ?>
+                                                                    <li><?= $obat ?></li>
+                                                                <?php } ?>
+                                                            </ul>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

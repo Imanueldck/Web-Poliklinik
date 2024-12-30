@@ -52,17 +52,7 @@ if (isset($_GET['edit_id'])) {
     $edit_data = mysqli_fetch_assoc($edit_query);
 }
 
-// Hapus jadwal
-if (isset($_GET['delete_id'])) {
-    $delete_id = intval($_GET['delete_id']);
-    $delete_query = "DELETE FROM Jadwal_Periksa WHERE id_jadwal = $delete_id AND id_dokter = $id_dokter";
-    if (mysqli_query($conn, $delete_query)) {
-        header('Location: jadwal-periksa.php');
-        exit();
-    } else {
-        $error_message = "Gagal menghapus jadwal: " . mysqli_error($conn);
-    }
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -177,8 +167,6 @@ if (isset($_GET['delete_id'])) {
                                     <td><?= $row['aktif'] ? 'Aktif' : 'Tidak Aktif' ?></td>
                                     <td>
                                         <a href="?edit_id=<?= $row['id_jadwal'] ?>" class="btn btn-warning btn-sm">Edit Status</a>
-                                        <a href="?delete_id=<?= $row['id_jadwal'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</a>
-                                    </td>
                                 </tr>
                             <?php }
                         } else { ?>

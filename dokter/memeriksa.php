@@ -11,7 +11,7 @@ include('../includes/db.php');
 $id_dokter = $_SESSION['user_id'];
 
 // Query untuk mengambil daftar pasien yang belum diperiksa
-$query = "
+$query_belum = "
     SELECT 
         dp.id_daftar, 
         p.nama_pasien, 
@@ -26,10 +26,34 @@ $query = "
     WHERE jp.id_dokter = ? AND dp.status = 'belum'
     ORDER BY dp.no_antrian ASC";
 
-$stmt = $conn->prepare($query);
-$stmt->bind_param('i', $id_dokter);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt_belum = $conn->prepare($query_belum);
+$stmt_belum->bind_param('i', $id_dokter);
+$stmt_belum->execute();
+$result_belum = $stmt_belum->get_result();
+
+// Query untuk mengambil daftar pasien yang sudah diperiksa
+$query_selesai = "
+    SELECT 
+        dp.id_daftar, 
+        p.nama_pasien, 
+        dp.keluhan, 
+        dp.no_antrian, 
+        jp.hari, 
+        jp.jam_mulai, 
+        jp.jam_selesai, 
+        per.tgl_periksa, 
+        per.catatan 
+    FROM Daftar_Poli dp
+    INNER JOIN Pasien p ON dp.id_pasien = p.id_pasien
+    INNER JOIN Jadwal_Periksa jp ON dp.id_jadwal = jp.id_jadwal
+    LEFT JOIN Periksa per ON dp.id_daftar = per.id_daftar
+    WHERE jp.id_dokter = ? AND dp.status = 'selesai'
+    ORDER BY dp.no_antrian ASC";
+
+$stmt_selesai = $conn->prepare($query_selesai);
+$stmt_selesai->bind_param('i', $id_dokter);
+$stmt_selesai->execute();
+$result_selesai = $stmt_selesai->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -47,8 +71,8 @@ $result = $stmt->get_result();
 <body>
     <div class="container-fluid">
         <div class="row">
-           <!-- Sidebar -->
-           <button class="sidebar-toggle d-md-none" onclick="toggleSidebar()">
+            <!-- Sidebar -->
+            <button class="sidebar-toggle d-md-none" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="sidebar d-md-block" id="sidebar">
@@ -66,6 +90,9 @@ $result = $stmt->get_result();
             <!-- Konten Utama -->
             <div class="col-md-9 col-lg-10 content p-4" id="content">
                 <h2>Daftar Pasien</h2>
+                
+                <!-- Pasien Belum Diperiksa -->
+                <h4>Belum Diperiksa</h4>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -76,13 +103,42 @@ $result = $stmt->get_result();
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()) { ?>
+                        <?php while ($row = $result_belum->fetch_assoc()) { ?>
                             <tr>
                                 <td><?= $row['no_antrian'] ?></td>
                                 <td><?= $row['nama_pasien'] ?></td>
                                 <td><?= $row['keluhan'] ?></td>
                                 <td>
                                     <a href="periksa_pasien.php?id_daftar=<?= $row['id_daftar'] ?>" class="btn btn-success">Periksa</a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+                <!-- Pasien Sudah Diperiksa -->
+                <h4>Sudah Diperiksa</h4>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No. Antrian</th>
+                            <th>Nama Pasien</th>
+                            <th>Keluhan</th>
+                            <th>Tanggal Periksa</th>
+                            <th>Catatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result_selesai->fetch_assoc()) { ?>
+                            <tr>
+                                <td><?= $row['no_antrian'] ?></td>
+                                <td><?= $row['nama_pasien'] ?></td>
+                                <td><?= $row['keluhan'] ?></td>
+                                <td><?= $row['tgl_periksa'] ? date('d-m-Y', strtotime($row['tgl_periksa'])) : '-' ?></td>
+                                <td><?= $row['catatan'] ?: '-' ?></td>
+                                <td>
+                                    <a href="edit_periksa.php?id_daftar=<?= $row['id_daftar'] ?>" class="btn btn-primary">Edit</a>
                                 </td>
                             </tr>
                         <?php } ?>
