@@ -121,7 +121,7 @@ $result_selesai = $stmt_selesai->get_result();
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>No. Antrian</th>
+                            <th>No.</th>
                             <th>Nama Pasien</th>
                             <th>Keluhan</th>
                             <th>Tanggal Periksa</th>
@@ -130,9 +130,11 @@ $result_selesai = $stmt_selesai->get_result();
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result_selesai->fetch_assoc()) { ?>
-                            <tr>
-                                <td><?= $row['no_antrian'] ?></td>
+                    <?php 
+                    $no = 1; // Inisialisasi nomor urut
+        while ($row = $result_selesai->fetch_assoc()) { ?>
+            <tr>
+                <td><?= $no++ ?></td>
                                 <td><?= $row['nama_pasien'] ?></td>
                                 <td><?= $row['keluhan'] ?></td>
                                 <td><?= $row['tgl_periksa'] ? date('d-m-Y', strtotime($row['tgl_periksa'])) : '-' ?></td>

@@ -68,6 +68,7 @@ $result = mysqli_query($conn, $query);
                                 <th>Dokter</th>
                                 <th>Hari</th>
                                 <th>Jam</th>
+                                <th>No Antrian</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -97,6 +98,7 @@ $result = mysqli_query($conn, $query);
                                     <td><?= $row['nama_dokter'] ?></td>
                                     <td><?= $row['hari'] ?></td>
                                     <td><?= $row['jam_mulai'] ?> - <?= $row['jam_selesai'] ?></td>
+                                    <td><?= $row['no_antrian'] ?></td>
                                     <td><?= $status ?></td>
                                     <td>
                                         <?php if ($row['tgl_periksa']) { ?>
