@@ -14,32 +14,44 @@ $id_dokter = $_SESSION['user_id'];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id_jadwal = isset($_POST['id_jadwal']) ? intval($_POST['id_jadwal']) : 0;
     $aktif = isset($_POST['aktif']) ? 1 : 0;
+    $hari = mysqli_real_escape_string($conn, $_POST['hari'] ?? '');
+    $jam_mulai = mysqli_real_escape_string($conn, $_POST['jam_mulai'] ?? '');
+    $jam_selesai = mysqli_real_escape_string($conn, $_POST['jam_selesai'] ?? '');
 
-    // Pastikan hanya ada satu jadwal aktif
-    if ($aktif) {
-        $disable_query = "UPDATE Jadwal_Periksa SET aktif = 0 WHERE id_dokter = $id_dokter";
-        mysqli_query($conn, $disable_query);
-    }
-
-    if ($id_jadwal) {
-        // Update status aktif saja
+    // Validasi: Cek apakah sudah ada jadwal pada hari yang sama
+    if (!$id_jadwal) { // Jika ini adalah input jadwal baru
+        $check_query = "SELECT * FROM Jadwal_Periksa WHERE id_dokter = $id_dokter AND hari = '$hari'";
+        $check_result = mysqli_query($conn, $check_query);
+        if (mysqli_num_rows($check_result) > 0) {
+            $error_message = "Jadwal untuk hari $hari sudah ada.";
+        } else {
+            // Tambah jadwal baru (nonaktif)
+            if ($aktif) {
+                $disable_query = "UPDATE Jadwal_Periksa SET aktif = 0 WHERE id_dokter = $id_dokter";
+                mysqli_query($conn, $disable_query);
+            }
+            $query = "INSERT INTO Jadwal_Periksa (id_dokter, hari, jam_mulai, jam_selesai, aktif) 
+                      VALUES ($id_dokter, '$hari', '$jam_mulai', '$jam_selesai', $aktif)";
+            if (mysqli_query($conn, $query)) {
+                $success_message = "Jadwal berhasil ditambahkan.";
+            } else {
+                $error_message = "Terjadi kesalahan saat menambahkan jadwal: " . mysqli_error($conn);
+            }
+        }
+    } else { // Jika ini adalah edit status jadwal
+        if ($aktif) {
+            $disable_query = "UPDATE Jadwal_Periksa SET aktif = 0 WHERE id_dokter = $id_dokter";
+            mysqli_query($conn, $disable_query);
+        }
         $query = "UPDATE Jadwal_Periksa SET aktif = $aktif WHERE id_jadwal = $id_jadwal AND id_dokter = $id_dokter";
-        $message = "Jadwal berhasil diperbarui.";
-    } else {
-        // Tambah jadwal baru (nonaktif)
-        $hari = mysqli_real_escape_string($conn, $_POST['hari']);
-        $jam_mulai = mysqli_real_escape_string($conn, $_POST['jam_mulai']);
-        $jam_selesai = mysqli_real_escape_string($conn, $_POST['jam_selesai']);
-        $query = "INSERT INTO Jadwal_Periksa (id_dokter, hari, jam_mulai, jam_selesai, aktif) VALUES ($id_dokter, '$hari', '$jam_mulai', '$jam_selesai', $aktif)";
-        $message = "Jadwal berhasil ditambahkan.";
-    }
-
-    if (mysqli_query($conn, $query)) {
-        $success_message = $message;
-    } else {
-        $error_message = "Terjadi kesalahan: " . mysqli_error($conn);
+        if (mysqli_query($conn, $query)) {
+            $success_message = "Jadwal berhasil diperbarui.";
+        } else {
+            $error_message = "Terjadi kesalahan saat memperbarui jadwal: " . mysqli_error($conn);
+        }
     }
 }
+
 
 // Ambil daftar jadwal periksa dokter
 $jadwal_result = mysqli_query($conn, "SELECT * FROM Jadwal_Periksa WHERE id_dokter = $id_dokter");
